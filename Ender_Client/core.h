@@ -16,5 +16,6 @@ public:
 	bool send_response(string&);
 	bool recieve_command(string&);
 	bool send_file(string filepath);
+	string get_machine_guid();
 	bool recieve_file();
 };

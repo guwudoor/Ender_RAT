@@ -85,7 +85,7 @@ bool Registry::CheckRegKey() {
 			RegCloseKey(key);
 			return false;
 		}
-		if (lstrcmp(ValueofKey, L"Ender007") == 0)
+		if (lstrcmp(ValueofKey, L"Ender-007") == 0)
 		{
 			RegCloseKey(key);
 			return true;

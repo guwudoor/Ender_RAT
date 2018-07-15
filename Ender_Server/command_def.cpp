@@ -23,13 +23,10 @@ void display_admin_help()
 
 void show_clients()
 {
-	cout << " Clients Connected" << endl;
-	for(int i=0;i < client_ids.size();i++) // client at same index in client_ids and client_array are same
+	cout << " S.No." << string(15, ' ') << "ID" << endl;
+	for(int i=0;i < client_ids.size();i++)
 	{
-		if(client_ids[i] != 0)
-		{
-			cout << " Client-> ID - " << client_ids[i] << endl;
-		}
+		cout << " " << i << string(15, ' ') << client_ids[i] << endl;
 	}
 }
 

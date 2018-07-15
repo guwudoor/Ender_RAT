@@ -6,10 +6,10 @@
 
 string SERVER::file_port_str = " ";
 
-SERVER::SERVER(SOCKET tmp, int id)
+SERVER::SERVER(SOCKET tmp)
 {
 	client = tmp;
-	client_id = id;
+	recieve_uniq_id(client_id);
 	client_status = 1;
 }
 
@@ -18,7 +18,12 @@ SERVER::~SERVER()
 	closesocket(client);
 }
 
-int SERVER::get_client_id()
+void SERVER::recieve_uniq_id(string& id)
+{
+	while (!recieve_response(id));
+}
+
+string SERVER::get_client_id()
 {
 	return client_id;
 }
@@ -191,7 +196,7 @@ string SERVER::gen_random_string()
 	srand(GetTickCount());
 	for(int i=0;i<10;i++)
 	{
-		int index = rand() % 63;
+		int index = rand() % (int)root_str.length();
 		str.push_back(root_str[index]);
 	}
 	return str;
