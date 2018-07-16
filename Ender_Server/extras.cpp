@@ -1,13 +1,14 @@
 #define WIN32_LEAN_AND_MEAN
+#include "server.h"
 #include "extras.h"
 #include <Windows.h>
 #include "com_vars.h"
 
 bool check_current_client_id(string id)
 {
-	for (int i = 0; i < client_ids.size(); i++)
+	for (int i = 0; i < client_array.size(); i++)
 	{
-		if (id == client_ids[i])
+		if (id == client_array[i]->get_client_id())
 		{
 			return true;
 		}

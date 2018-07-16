@@ -11,7 +11,6 @@ using namespace std;
 #pragma comment (lib, "Ws2_32.lib")
 
 vector<SERVER*> client_array;
-vector<string> client_ids;
 string current_client = "None";
 
 void function_failed(char* function_name)
@@ -103,7 +102,6 @@ void handle_client(LPVOID ClientParam)
 	ClientSocketStruct ClientSocket = *(ClientSocketStruct*)ClientParam;
 	SERVER client(ClientSocket.ClientSocket);
 	client_array.push_back(&client); // push client object's base address into global vector
-	client_ids.push_back(client.get_client_id());
 	string id = client.get_client_id();
 	string command;
 	while (client.get_client_status() == 1) {
@@ -126,8 +124,7 @@ void handle_client(LPVOID ClientParam)
 		current_client = "None";
 	}
 	show_shell();
-//	remove_client(id);
-//  Remove client object from global vector
+	remove_client(id);
 }
 
 void admin_mode()
@@ -152,7 +149,7 @@ void handle_admin_command(string& command)
 		int s_no = atoi(command.c_str() + 7);
 		handle_by_s_no(s_no);
 	}
-	else if(command == "admin help")
+	else if(command == "help")
 	{
 		display_admin_help();
 	}
@@ -202,15 +199,27 @@ void handle_client_panel(SERVER& client, string& command)
 
 void handle_by_s_no(int s_no)
 {
-	for(int i=0;i<client_ids.size();i++)
+	for(int i=0;i<client_array.size();i++)
 	{
 		if (i == s_no) {
-			current_client = client_ids[i];
+			current_client = client_array[i]->get_client_id();
 			break;
 		}
 	}
 	while(current_client != "None")
 	{
 		Sleep(500);
+	}
+}
+
+void remove_client(string id)
+{
+	for(int i=0; i < client_array.size(); i++)
+	{
+		if(id == client_array[i]->get_client_id())
+		{
+			client_array.erase(client_array.begin() + i);
+			i--;
+		}
 	}
 }

@@ -83,7 +83,7 @@ string SERVER::get_username()
 	return username;
 }
 
-void SERVER::recieve_file_async(LPVOID param)
+void SERVER::recieve_file_async(LPVOID param)  // TODO: Change this
 {
 	SOCKET file_listen_socket = socket(AF_UNSPEC, SOCK_STREAM, IPPROTO_TCP);
 	struct addrinfo *sock;
