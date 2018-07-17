@@ -26,10 +26,10 @@ void display_admin_help()
 
 void show_clients()
 {
-	cout << " S.No." << string(15, ' ') << "ID" << endl;
+	cout << " S.No." << string(15, ' ') << "ID" << string(40, ' ') << "Username" << endl;
 	for(int i=0;i < client_array.size();i++)
 	{
-		cout << " " << i << string(15, ' ') << client_array[i]->get_client_id() << endl;
+		cout << " " << i << string(15, ' ') << client_array[i]->get_client_id() << string(10, ' ') << client_array[i]->get_username() << endl;
 	}
 }
 

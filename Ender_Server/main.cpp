@@ -101,8 +101,14 @@ void handle_client(LPVOID ClientParam)
 {
 	ClientSocketStruct ClientSocket = *(ClientSocketStruct*)ClientParam;
 	SERVER client(ClientSocket.ClientSocket);
-	client_array.push_back(&client); // push client object's base address into global vector
 	string id = client.get_client_id();
+	if(check_current_client_id(id))
+	{
+		client.send_command(string("disconnect"));
+		show_error("Rejected Duplicate Client");
+		return;
+	}
+	client_array.push_back(&client); // push client object's base address into global vector
 	string command;
 	while (client.get_client_status() == 1) {
 		if (current_client == client.get_client_id())
@@ -131,12 +137,13 @@ void admin_mode()
 {
 	cout << " Welcome";
 	display_admin_help();
+	show_shell();
 	string command;
 	getline(cin, command);
 	while(command != "quit")
 	{
 		handle_admin_command(command);
-		cout << "# ";
+		show_shell();
 		getline(cin, command);
 		//Sleep(200);
 	}
@@ -199,6 +206,10 @@ void handle_client_panel(SERVER& client, string& command)
 
 void handle_by_s_no(int s_no)
 {
+	if(s_no < 0 || s_no > client_array.size())
+	{
+		return;
+	}
 	for(int i=0;i<client_array.size();i++)
 	{
 		if (i == s_no) {
@@ -219,7 +230,7 @@ void remove_client(string id)
 		if(id == client_array[i]->get_client_id())
 		{
 			client_array.erase(client_array.begin() + i);
-			i--;
+			break;
 		}
 	}
 }
